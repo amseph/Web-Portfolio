@@ -18,14 +18,32 @@ const pixel = Press_Start_2P({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ivanjaurigue.vercel.app"),
   title: "Ivan Jaurigue - UI/UX Designer & Front-End Developer",
   description:
-    "Interactive web portfolio of Ivan Jaurigue, a UI/UX-focused Front-End Developer and Graphic Designer creating polished, familiar, and user-friendly digital experiences.",
+    "Retro RPG-inspired portfolio of Ivan Jaurigue, a UI/UX-focused Front-End Developer and Graphic Designer.",
   openGraph: {
     title: "Ivan Jaurigue - UI/UX Designer & Front-End Developer",
     description:
-      "Interactive web portfolio of Ivan Jaurigue, a UI/UX-focused Front-End Developer and Graphic Designer creating polished, familiar, and user-friendly digital experiences.",
+      "Retro RPG-inspired portfolio of Ivan Jaurigue, a UI/UX-focused Front-End Developer and Graphic Designer.",
+    url: "https://ivanjaurigue.vercel.app",
+    siteName: "Ivan Jaurigue Portfolio",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Ivan Jaurigue Retro RPG Portfolio Preview",
+      },
+    ],
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ivan Jaurigue - UI/UX Designer & Front-End Developer",
+    description:
+      "Retro RPG-inspired portfolio of Ivan Jaurigue, a UI/UX-focused Front-End Developer and Graphic Designer.",
+    images: ["/og-image.png"],
   },
 };
 
