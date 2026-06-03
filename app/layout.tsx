@@ -22,6 +22,7 @@ export const metadata: Metadata = {
   title: "Ivan Jaurigue - UI/UX Designer & Front-End Developer",
   description:
     "Retro RPG-inspired portfolio of Ivan Jaurigue, a UI/UX-focused Front-End Developer and Graphic Designer.",
+  icons: { icon: "/WP.png", shortcut: "/WP.png", apple: "/WP.png" },
   openGraph: {
     title: "Ivan Jaurigue - UI/UX Designer & Front-End Developer",
     description:
