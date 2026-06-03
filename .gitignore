@@ -1,0 +1,35 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+build/
+
+# production
+dist/
+
+# local env
+.env
+.env*.local
+.vercel/
+
+# markdown notes/prompts
+/Markdowns/
+
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# generated
+*.tsbuildinfo
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
