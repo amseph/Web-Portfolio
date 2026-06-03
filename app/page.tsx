@@ -246,9 +246,9 @@ export default function Home() {
             <Reveal delay={0.08} className="profile-build min-w-0">
               <CardSwap
                 cards={[
-                  { label: "Trait Card", title: "Creative", copy: "A visual thinker who keeps interfaces useful and memorable." },
-                  { label: "Main Skill", title: "UI/UX", copy: "Familiar flows, clean hierarchy, and smooth interaction." },
-                  { label: "Build Style", title: "Frontend", copy: "Responsive React interfaces with complete polished states." },
+                  { label: "Trait Card", title: "Creative", copy: "A visual thinker who keeps interfaces useful and memorable.", image: "/Creative.png" },
+                  { label: "Main Skill", title: "UI/UX", copy: "Familiar flows, clean hierarchy, and smooth interaction.", image: "/UI.png" },
+                  { label: "Build Style", title: "Frontend", copy: "Responsive React interfaces with complete polished states.", image: "/Frontend.png" },
                 ]}
               />
             </Reveal>

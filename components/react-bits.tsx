@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
 import type { ComponentProps, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TechItemMini } from "@/components/tech-inventory";
@@ -144,7 +145,7 @@ export function TiltedCard({ className = "", children, ...props }: ComponentProp
 export function CardSwap({
   cards,
 }: {
-  cards: Array<{ label: string; title: string; copy: string }>;
+  cards: Array<{ label: string; title: string; copy: string; image: string }>;
 }) {
   const [active, setActive] = useState(1);
 
@@ -174,9 +175,23 @@ export function CardSwap({
             data-profile-card
             className={`card-swap-card ${state}`}
           >
-            <span>{card.label}</span>
-            <strong>{card.title}</strong>
-            <small>{card.copy}</small>
+            <div className="card-swap-media" data-fallback={card.title}>
+              <Image
+                src={card.image}
+                alt=""
+                fill
+                sizes="(min-width: 1180px) 433px, (min-width: 768px) 50vw, 90vw"
+                priority={index === active}
+                onError={(event) => {
+                  event.currentTarget.hidden = true;
+                }}
+              />
+            </div>
+            <div className="card-swap-content">
+              <span>{card.label}</span>
+              <strong>{card.title}</strong>
+              <small>{card.copy}</small>
+            </div>
           </article>
         );
       })}
