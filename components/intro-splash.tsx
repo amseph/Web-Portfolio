@@ -14,8 +14,7 @@ export function IntroSplash() {
   const isClosingRef = useRef(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [needsUserPlay, setNeedsUserPlay] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -36,7 +35,6 @@ export function IntroSplash() {
       }
 
       isClosingRef.current = true;
-      setNeedsUserPlay(false);
       setIsClosing(true);
       fadeTimerRef.current = window.setTimeout(() => {
         setIsVisible(false);
@@ -48,11 +46,9 @@ export function IntroSplash() {
     fallbackTimerRef.current = window.setTimeout(closeIntro, FALLBACK_DURATION_MS);
 
     if (video) {
-      video.muted = false;
+      video.muted = true;
       video.volume = 1;
-      video.play().catch(() => {
-        setNeedsUserPlay(true);
-      });
+      video.play().catch(() => {});
     }
 
     return () => {
@@ -74,33 +70,12 @@ export function IntroSplash() {
     if (fallbackTimerRef.current) {
       window.clearTimeout(fallbackTimerRef.current);
     }
-    setNeedsUserPlay(false);
     setIsClosing(true);
     fadeTimerRef.current = window.setTimeout(() => {
       setIsVisible(false);
       document.body.classList.add("portfolio-ready");
       window.setTimeout(() => window.dispatchEvent(new Event("portfolio:intro-complete")), PORTFOLIO_FADE_IN_DURATION_MS);
     }, GLITCH_EXIT_DURATION_MS);
-  };
-
-  const handlePlayIntro = async () => {
-    const video = videoRef.current;
-
-    if (!video) {
-      closeIntro();
-      return;
-    }
-
-    try {
-      video.muted = isMuted;
-      await video.play();
-      setNeedsUserPlay(false);
-    } catch {
-      video.muted = true;
-      setIsMuted(true);
-      await video.play();
-      setNeedsUserPlay(false);
-    }
   };
 
   const toggleMute = () => {
@@ -110,6 +85,7 @@ export function IntroSplash() {
     setIsMuted(nextMuted);
     if (video) {
       video.muted = nextMuted;
+      video.play().catch(() => {});
     }
   };
 
@@ -123,27 +99,21 @@ export function IntroSplash() {
         ref={videoRef}
         className="intro-splash-video"
         src="/RetroLoading.mp4"
+        autoPlay
+        muted
         playsInline
         preload="auto"
         onEnded={closeIntro}
         onCanPlay={() => {
-          if (!needsUserPlay) {
-            videoRef.current?.play().catch(() => setNeedsUserPlay(true));
-          }
+          videoRef.current?.play().catch(() => {});
         }}
       />
       <div className="intro-splash-vignette" />
 
       <div className="intro-splash-controls">
-        {needsUserPlay ? (
-          <button type="button" className="intro-skip-button is-primary" onClick={handlePlayIntro}>
-            Play
-          </button>
-        ) : (
-          <button type="button" className="intro-audio-button" onClick={toggleMute} aria-label={isMuted ? "Unmute intro" : "Mute intro"}>
-            {isMuted ? <VolumeX aria-hidden size={14} /> : <Volume2 aria-hidden size={14} />}
-          </button>
-        )}
+        <button type="button" className="intro-audio-button" onClick={toggleMute} aria-label={isMuted ? "Unmute intro" : "Mute intro"}>
+          {isMuted ? <VolumeX aria-hidden size={14} /> : <Volume2 aria-hidden size={14} />}
+        </button>
         <button type="button" className="intro-skip-button" onClick={closeIntro}>
           Skip
         </button>
