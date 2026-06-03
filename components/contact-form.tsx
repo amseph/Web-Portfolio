@@ -23,9 +23,7 @@ export function ContactForm() {
 
   function updateField(field: keyof typeof fields, value: string) {
     setFields((current) => ({ ...current, [field]: value }));
-    if (field === "name" || field === "email") {
-      setStepError("");
-    }
+    setStepError("");
   }
 
   function validateIdentityStep() {
@@ -33,7 +31,7 @@ export function ContactForm() {
     const email = fields.email.trim();
 
     if (!name || !email) {
-      const message = "Enter your name and email to continue.";
+      const message = "Enter your name and email first.";
       setStepError(message);
       toast.warning("Identity check", message);
       return false;
@@ -50,9 +48,34 @@ export function ContactForm() {
     return true;
   }
 
+  function validateSubjectStep() {
+    const subject = fields.subject.trim();
+
+    if (!subject) {
+      const message = "Add a subject first.";
+      setStepError(message);
+      toast.warning("Subject check", message);
+      return false;
+    }
+
+    setStepError("");
+    return true;
+  }
+
+  function validateCurrentStep() {
+    if (step === 0) {
+      return validateIdentityStep();
+    }
+
+    if (step === 1) {
+      return validateSubjectStep();
+    }
+
+    return true;
+  }
+
   function goToStep(nextStep: number) {
-    if (nextStep > 0 && !validateIdentityStep()) {
-      setStep(0);
+    if (nextStep > step && !validateCurrentStep()) {
       return;
     }
 
@@ -64,36 +87,80 @@ export function ContactForm() {
     goToStep(nextStep);
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  function validateForm() {
     const name = fields.name.trim();
     const email = fields.email.trim();
+    const subject = fields.subject.trim();
     const message = fields.message.trim();
 
-    if (!name || !email || !isValidEmail(email) || !message) {
+    if (!name || !email) {
+      return "Enter your name and email first.";
+    }
+
+    if (!isValidEmail(email)) {
+      return "Use a valid email address before sending.";
+    }
+
+    if (!subject) {
+      return "Add a subject first.";
+    }
+
+    if (!message) {
+      return "Write your message before sending.";
+    }
+
+    return "";
+  }
+
+  async function handleSend() {
+    const validationMessage = validateForm();
+
+    if (validationMessage) {
       setState("error");
-      toast.error("Message not ready", "Complete the required fields before sending.");
+      toast.error("Message not ready", validationMessage);
       return;
     }
 
     setState("loading");
-    const loadingToast = toast.loading("Preparing message", "Opening your email client...");
-    const subject = encodeURIComponent(fields.subject.trim() || "Portfolio collaboration");
-    const body = encodeURIComponent(
-      [
-        `Name: ${name}`,
-        `Email: ${email}`,
-        "",
-        message,
-      ].join("\n"),
-    );
+    const loadingToast = toast.loading("Sending message", "Delivering your note...");
 
-    window.setTimeout(() => {
-      window.location.href = `mailto:jaurigue.ijj@gmail.com?subject=${subject}&body=${body}`;
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: fields.name.trim(),
+          email: fields.email.trim(),
+          subject: fields.subject.trim(),
+          message: fields.message.trim(),
+        }),
+      });
+      const result = (await response.json()) as { success?: boolean; error?: string };
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Unable to send your message right now.");
+      }
+
       toast.dismiss(loadingToast);
-      toast.success("Message prepared", "Your email client should open with the message ready.");
+      toast.success("Message sent", "Your note has been delivered.");
       setState("success");
-    }, 450);
+      setFields({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+      setStep(0);
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      toast.error(
+        "Message failed",
+        error instanceof Error ? error.message : "Unable to send your message right now.",
+      );
+      setState("error");
+    }
   }
 
   const inputClass =
@@ -101,7 +168,11 @@ export function ContactForm() {
   const steps = ["Identity", "Subject", "Message"];
 
   return (
-    <form onSubmit={handleSubmit} className="dialogue-box p-5 sm:p-7" noValidate>
+    <form
+      onSubmit={(event) => event.preventDefault()}
+      className="dialogue-box p-5 sm:p-7"
+      noValidate
+    >
       <div className="mb-7 flex flex-wrap items-center gap-3" aria-label="Contact form steps">
         {steps.map((label, index) => (
           <button
@@ -170,6 +241,7 @@ export function ContactForm() {
                 placeholder="Portfolio collaboration"
                 value={fields.subject}
                 onChange={(event) => updateField("subject", event.target.value)}
+                required
               />
             </label>
             <div className="border-[3px] border-[var(--border)] bg-[var(--surface-strong)] p-5">
@@ -217,19 +289,20 @@ export function ContactForm() {
             </button>
           ) : (
             <button
-              type="submit"
+              type="button"
+              onClick={handleSend}
               disabled={state === "loading"}
               className="pixel-button min-w-28 px-4 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {state === "loading" ? "Preparing..." : "Send"} <Send aria-hidden size={16} />
+              {state === "loading" ? "Sending..." : "Send"} <Send aria-hidden size={16} />
             </button>
           )}
         </div>
       </div>
 
       <div aria-live="polite" className="sr-only">
-        {state === "success" ? "Message prepared successfully." : null}
-        {state === "error" ? "Something went wrong while preparing your message." : null}
+        {state === "success" ? "Message sent successfully." : null}
+        {state === "error" ? "Something went wrong while sending your message." : null}
       </div>
     </form>
   );

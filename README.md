@@ -37,7 +37,12 @@ Install dependencies:
 npm install
 ```
 
-No environment variables are required for the current static portfolio experience.
+Create `.env.local` with the contact form email settings:
+
+```bash
+RESEND_API_KEY=your_resend_api_key
+CONTACT_EMAIL=you@example.com
+```
 
 ## Run Locally
 
@@ -69,7 +74,7 @@ This project is ready for Vercel with the default Next.js settings.
 - Build command: `npm run build`
 - Install command: `npm install`
 - Output directory: handled automatically by Vercel
-- Environment variables: none required
+- Environment variables: `RESEND_API_KEY`, `CONTACT_EMAIL`
 
 Keep the media files in `public/` because the loading screen, portrait, and audio controls reference them directly:
 
