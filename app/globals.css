@@ -860,7 +860,9 @@ html[data-theme="nintendo"] .difficulty-button.is-active small {
   z-index: 9999;
   min-height: 100dvh;
   overflow: hidden;
-  background: #050505;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(229, 181, 103, 0.1), transparent 42%),
+    linear-gradient(180deg, #10100d 0%, #050505 48%, #020202 100%);
   opacity: 1;
 }
 
@@ -931,8 +933,8 @@ html[data-theme="nintendo"] .difficulty-button.is-active small {
 
 .intro-splash-controls {
   position: fixed;
-  right: max(0.8rem, env(safe-area-inset-right));
-  bottom: max(0.8rem, env(safe-area-inset-bottom));
+  right: calc(0.8rem + env(safe-area-inset-right));
+  bottom: calc(0.8rem + env(safe-area-inset-bottom));
   z-index: 2;
   display: flex;
   align-items: center;
@@ -1237,10 +1239,37 @@ html[data-theme="nintendo"] .difficulty-button.is-active small {
   animation: character-swap-in 320ms steps(5, end) both;
 }
 
+@media (max-width: 1024px) {
+  .intro-splash {
+    display: grid;
+    place-items: center;
+    padding:
+      calc(0.75rem + env(safe-area-inset-top))
+      calc(0.75rem + env(safe-area-inset-right))
+      calc(4.75rem + env(safe-area-inset-bottom))
+      calc(0.75rem + env(safe-area-inset-left));
+    background:
+      radial-gradient(circle at 50% 44%, rgba(229, 181, 103, 0.14), transparent 44%),
+      repeating-linear-gradient(0deg, rgba(244, 235, 216, 0.025) 0 1px, transparent 1px 8px),
+      linear-gradient(180deg, #11110e 0%, #050505 52%, #020202 100%);
+  }
+
+  .intro-splash-video {
+    position: relative;
+    inset: auto;
+    display: block;
+    width: calc(100dvw - env(safe-area-inset-left) - env(safe-area-inset-right) - 1.5rem);
+    height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 5.5rem);
+    max-width: calc(100dvw - env(safe-area-inset-left) - env(safe-area-inset-right) - 1.5rem);
+    max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 5.5rem);
+    object-fit: contain;
+  }
+}
+
 @media (max-width: 640px) {
   .intro-splash-controls {
-    right: max(0.65rem, env(safe-area-inset-right));
-    bottom: max(0.65rem, env(safe-area-inset-bottom));
+    right: calc(0.65rem + env(safe-area-inset-right));
+    bottom: calc(0.65rem + env(safe-area-inset-bottom));
   }
 
   .intro-skip-button,
