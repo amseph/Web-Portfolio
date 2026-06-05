@@ -62,4 +62,4 @@ Built with open-source tools and components, including Next.js, React, TypeScrip
 
 ## Author
 
-Designed and built by Ivan Joseph Jaurigue.
+Designed and built by Ivan Jaurigue.
